@@ -531,6 +531,32 @@ def execute_command(command, input_text):
     elif command in custom_plugin:
         exec_plugin(command, input_text)
     
+    # System Controls
+    elif command == "shutdown_pc":
+        if confirm_sensitive():
+            speak("Shutting down the computer in 10 seconds.")
+            subprocess.run(["shutdown", "/s", "/t", "10"], shell=True)
+        else:
+            speak("Shutdown cancelled.")
+    
+    elif command == "restart_pc":
+        if confirm_sensitive():
+            speak("Restarting the computer in 10 seconds.")
+            subprocess.run(["shutdown", "/r", "/t", "10"], shell=True)
+        else:
+            speak("Restart cancelled.")
+    
+    elif command == "sleep_pc":
+        if confirm_sensitive():
+            speak("Putting computer to sleep.")
+            subprocess.run(["rundll32.exe", "powrprof.dll,SetSuspendState", "0,1,0"], shell=True)
+        else:
+            speak("Sleep cancelled.")
+    
+    # Help command
+    elif command == "help":
+        show_help()
+    
     # Exit
     elif command == "exit":
         speak("Shutting down. Goodbye.")

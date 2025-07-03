@@ -6,5 +6,13 @@
   "open_file": "Open a specific file. Example: 'open file report.pdf'",
   "voice_on": "Turn on voice responses.",
   "voice_off": "Turn off voice responses.",
+  "help": "Show all available commands and their usage.",
+  "shutdown_pc": "Shutdown the computer (requires confirmation).",
+  "restart_pc": "Restart the computer (requires confirmation).",
+  "sleep_pc": "Put the computer to sleep (requires confirmation).",
+  "mute_sound": "Mute system audio.",
+  "unmute_sound": "Unmute system audio.",
+  "increase_volume": "Increase system volume.",
+  "decrease_volume": "Decrease system volume.",
   "exit": "Shut down KRYPTON safely."
 }

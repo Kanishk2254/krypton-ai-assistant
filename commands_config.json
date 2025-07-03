@@ -21,8 +21,7 @@
     "aliases": ["voice off", "deactivate voice mode"]
   },
   "exit": {
-    "aliases": ["exit", "shutdown krypton", "quit assistant"],
-    "sensitive": true
+    "aliases": ["exit", "shutdown krypton", "quit assistant"]
   },
   "mute_sound": {
     "aliases": ["mute sound", "mute audio", "silence the volume"]
@@ -44,5 +43,20 @@
   },
   "music_queue": {
     "aliases": ["play music", "play song", "add to queue", "pause music", "next song", "resume music", "stop music"]
+  },
+  "help": {
+    "aliases": ["help", "show commands", "what can you do", "list commands"]
+  },
+  "shutdown_pc": {
+    "aliases": ["shutdown computer", "turn off pc", "power off", "shutdown pc"],
+    "sensitive": true
+  },
+  "restart_pc": {
+    "aliases": ["restart computer", "reboot pc", "restart pc", "reboot computer"],
+    "sensitive": true
+  },
+  "sleep_pc": {
+    "aliases": ["sleep computer", "put pc to sleep", "hibernate pc", "sleep pc"],
+    "sensitive": true
   }
 }
