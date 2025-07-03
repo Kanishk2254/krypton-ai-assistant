@@ -1,15 +1,15 @@
 {
   "open_notepad": {
-    "aliases": ["open notepad", "launch notepad", "start notepad"]
+    "aliases": ["open notepad", "launch notepad", "start notepad", "notepad"]
   },
   "open_chrome": {
-    "aliases": ["open chrome", "launch chrome", "start chrome"]
+    "aliases": ["open chrome", "launch chrome", "start chrome", "chrome", "open browser"]
   },
   "get_time": {
     "aliases": ["what time is it", "tell me the time", "current time"]
   },
   "search_web": {
-    "aliases": ["search", "google", "find"]
+    "aliases": ["search", "google", "find", "search for", "search the web", "search the web for", "google search", "look up", "find information"]
   },
   "open_file": {
     "aliases": ["open file"]

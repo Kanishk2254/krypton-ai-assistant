@@ -379,8 +379,15 @@ def toggle_silent_mode():
 # Replace speak if silent
 def speak(text):
     if VOICE_MODE and not SILENT_MODE:
-        engine.say(text)
-        engine.runAndWait()
+        try:
+            engine.say(text)
+            engine.runAndWait()
+        except RuntimeError as e:
+            if "run loop already started" in str(e):
+                # Engine is busy, just print the text
+                print(f"[{ASSISTANT_NAME}] (Voice Busy): {text}")
+            else:
+                print(f"[{ASSISTANT_NAME}] (TTS Error): {text}")
     if not SILENT_MODE:
         print(f"[{ASSISTANT_NAME}]: {text}")
 
@@ -450,11 +457,28 @@ def execute_command(command, input_text):
         speak(f"The current time is {current_time}.")
         
     elif command == "search_web":
-        query = extract_parameter(input_text, r"(?:search|google|find) (.+)")
+        # Try multiple patterns to extract search query
+        patterns = [
+            r"search for (.+)",
+            r"search (.+)",
+            r"google (.+)",
+            r"find (.+)",
+            r"look up (.+)"
+        ]
+        
+        query = None
+        for pattern in patterns:
+            match = re.search(pattern, input_text, re.IGNORECASE)
+            if match:
+                query = match.group(1).strip()
+                break
+        
         if query:
-            subprocess.Popen(["start", f"https://www.google.com/search?q={query}"])
+            search_url = f"https://www.google.com/search?q={query.replace(' ', '+')}"
+            subprocess.Popen(["start", search_url], shell=True)
+            speak(f"Searching for {query}")
         else:
-            speak("What should I search?")
+            speak("What should I search for?")
             
     elif command == "open_file":
         filename = extract_parameter(input_text, r"open file (.+)")
@@ -544,14 +568,14 @@ def main_loop():
             speak("🔇 Voice mode deactivated.")
             continue
         
-        # Try NLP-based intent detection first
-        if nlp_result["intent"] != "unknown" and nlp_result["confidence"] > 0.6:
+        # Try fuzzy matching first (more reliable for current setup)
+        command_key = match_command(user_input)
+        
+        # If no fuzzy match, try NLP with lower threshold
+        if not command_key and nlp_result["intent"] != "unknown" and nlp_result["confidence"] > 0.1:
             command_key = nlp_result["intent"]
             if DEBUG_MODE:
                 print(f"[NLP] Detected intent: {command_key} (confidence: {nlp_result['confidence']:.2f})")
-        else:
-            # Fallback to fuzzy matching
-            command_key = match_command(user_input)
         
         if command_key:
             config = commands_config.get(command_key)
