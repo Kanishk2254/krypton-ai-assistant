@@ -1,0 +1,135 @@
+# Krypton - AI Assistant .gitignore
+
+# Environment variables and secrets
+.env
+.env.local
+.env.production
+.env.test
+
+# Personal data and logs
+command_log.txt
+encrypted_log.bin
+secure_log.txt
+test_results.log
+test_report.json
+
+# Personal configuration (users should copy from examples)
+settings.json
+security.json
+dev_config.json
+
+# Runtime data
+data/
+*.json.bak
+reminders.json
+context.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Testing
+.coverage
+.pytest_cache/
+.tox/
+htmlcov/
+
+# Documentation builds
+docs/_build/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# PyCharm
+.idea/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Encryption keys (security critical)
+*.key
+*.pem
+*.p12
+*.pfx
+fernet.key
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Media files (may be large)
+*.wav
+*.mp3
+*.mp4
+*.avi
+*.mov
+
+# Ignore plugin data files (users create their own)
+plugins/user_*
+plugins/custom_*
+
+# Ignore any personal test files
+test_*
+*_test.py
+playground.py

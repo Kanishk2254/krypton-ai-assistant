@@ -1,0 +1,10 @@
+{
+  "open_notepad": "Open Notepad on your PC.",
+  "open_chrome": "Launch Google Chrome.",
+  "get_time": "Tell the current system time.",
+  "search_web": "Search something online. Example: 'search Python tutorials'",
+  "open_file": "Open a specific file. Example: 'open file report.pdf'",
+  "voice_on": "Turn on voice responses.",
+  "voice_off": "Turn off voice responses.",
+  "exit": "Shut down KRYPTON safely."
+}

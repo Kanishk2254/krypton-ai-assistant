@@ -1,0 +1,25 @@
+{
+  "assistant_name": "KRYPTON",
+  "user_name": "User",
+  "default_browser": "chrome",
+  "theme": "dark",
+  "debug_mode": false,
+  "log_level": "info",
+  "voice_mode": true,
+  "trigger_phrases": [
+    "hey krypton", 
+    "wake up", 
+    "awaken", 
+    "arise", 
+    "rise krypton", 
+    "initiate sequence"
+  ],
+  "confirm_sound": "confirm.wav",
+  "error_sound": "error.wav",
+  "tray_icon": "pfp.jpg",
+  "log_commands": true,
+  "nlp_enabled": true,
+  "session_timeout_minutes": 5,
+  "voice_speed": 200,
+  "voice_volume": 0.9
+}

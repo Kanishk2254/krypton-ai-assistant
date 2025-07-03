@@ -1,0 +1,48 @@
+{
+  "open_notepad": {
+    "aliases": ["open notepad", "launch notepad", "start notepad"]
+  },
+  "open_chrome": {
+    "aliases": ["open chrome", "launch chrome", "start chrome"]
+  },
+  "get_time": {
+    "aliases": ["what time is it", "tell me the time", "current time"]
+  },
+  "search_web": {
+    "aliases": ["search", "google", "find"]
+  },
+  "open_file": {
+    "aliases": ["open file"]
+  },
+  "voice_on": {
+    "aliases": ["voice on", "activate voice mode"]
+  },
+  "voice_off": {
+    "aliases": ["voice off", "deactivate voice mode"]
+  },
+  "exit": {
+    "aliases": ["exit", "shutdown krypton", "quit assistant"],
+    "sensitive": true
+  },
+  "mute_sound": {
+    "aliases": ["mute sound", "mute audio", "silence the volume"]
+  },
+  "unmute_sound": {
+    "aliases": ["unmute sound", "unmute audio", "turn on volume"]
+  },
+  "increase_volume": {
+    "aliases": ["volume up", "increase volume", "raise the sound"]
+  },
+  "decrease_volume": {
+    "aliases": ["volume down", "decrease volume", "lower the sound"]
+  },
+  "silent_mode": { 
+    "aliases": ["shut up", "quiet", "silent mode"]
+  },
+  "weather_report": {
+    "aliases": ["tell me the weather", "how's the weather", "weather in", "check weather"]
+  },
+  "music_queue": {
+    "aliases": ["play music", "play song", "add to queue", "pause music", "next song", "resume music", "stop music"]
+  }
+}

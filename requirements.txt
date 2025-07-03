@@ -1,0 +1,31 @@
+# Krypton AI Assistant - Python Dependencies
+
+# Core speech and AI
+speechrecognition==3.10.0
+pyttsx3==2.90
+spacy>=3.4.0
+
+# Audio and multimedia
+pygame==2.5.2
+
+# GUI and system integration
+pystray==0.19.4
+Pillow>=9.0.0
+plyer==2.1.0
+
+# Data processing and utilities
+difflib2>=0.1.0
+
+# Security and encryption
+cryptography>=37.0.0
+
+# System monitoring (for testing)
+psutil>=5.9.0
+
+# Optional: For enhanced NLP (install manually)
+# python -m spacy download en_core_web_sm
+
+# Development dependencies (optional)
+# black>=22.0.0        # Code formatting
+# pytest>=7.0.0       # Testing
+# mypy>=0.991         # Type checking
