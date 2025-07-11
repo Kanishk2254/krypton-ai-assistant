@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KRYPTON AI Assistant - JARVIS Interface</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="background">
+        <div class="circuit-board"></div>
+        <div class="particles"></div>
+    </div>
+
+    <!-- Main Interface Container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <div class="logo-circle">
+                        <div class="logo-inner"></div>
+                    </div>
+                    <div class="logo-text">
+                        <h1>KRYPTON</h1>
+                        <span class="subtitle">AI ASSISTANT</span>
+                    </div>
+                </div>
+                <div class="status-bar">
+                    <div class="status-item">
+                        <span class="status-label">STATUS:</span>
+                        <span id="system-status" class="status-value offline">OFFLINE</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">MODE:</span>
+                        <span id="voice-mode" class="status-value">STANDBY</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <div class="main-grid">
+            <!-- Main Interface Panel -->
+            <div class="panel main-panel">
+                <!-- Voice Visualization -->
+                <div class="voice-viz">
+                    <div class="voice-circle">
+                        <div class="voice-pulse"></div>
+                        <div class="voice-icon">🎯</div>
+                    </div>
+                </div>
+
+                <!-- System Controls -->
+                <div class="control-section">
+                    <div class="control-group">
+                        <button id="power-btn" class="control-btn power-btn" data-action="start">
+                            <span class="btn-icon">⚡</span>
+                            <span class="btn-text">ACTIVATE</span>
+                        </button>
+                        <button id="voice-btn" class="control-btn voice-btn disabled" data-action="voice">
+                            <span class="btn-icon">🎤</span>
+                            <span class="btn-text">VOICE MODE</span>
+                        </button>
+                        <button id="stop-btn" class="control-btn stop-btn disabled" data-action="stop">
+                            <span class="btn-icon">🛑</span>
+                            <span class="btn-text">DEACTIVATE</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Command Interface -->
+                <div class="command-interface">
+                    <div class="input-group">
+                        <input type="text" id="command-input" placeholder="Enter command..." autocomplete="off">
+                        <button id="send-btn" class="send-btn">
+                            <span>EXECUTE</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Response Display -->
+                <div class="response-panel">
+                    <div class="response-header">
+                        <h4>KRYPTON RESPONSE</h4>
+                        <span id="response-time" class="timestamp"></span>
+                    </div>
+                    <div id="response-content" class="response-content">
+                        <div class="welcome-message">
+                            Welcome to KRYPTON AI Assistant Interface<br>
+                            <span class="sub-text">Ready to receive commands...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats and Activity Panel -->
+            <div class="panel stats-activity-panel">
+                <div class="panel-grid">
+                    <!-- System Stats -->
+                    <div class="stats-section">
+                        <h4>SYSTEM METRICS</h4>
+                        <div class="stat-item">
+                            <span class="stat-label">CPU:</span>
+                            <div class="stat-bar">
+                                <div id="cpu-bar" class="stat-fill" style="width: 0%"></div>
+                            </div>
+                            <span id="cpu-value" class="stat-value">0%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">MEMORY:</span>
+                            <div class="stat-bar">
+                                <div id="memory-bar" class="stat-fill" style="width: 0%"></div>
+                            </div>
+                            <span id="memory-value" class="stat-value">0%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">COMMANDS:</span>
+                            <span id="commands-count" class="stat-value">0</span>
+                        </div>
+                    </div>
+
+                    <!-- Activity Log -->
+                    <div class="activity-section">
+                        <div class="panel-header">
+                            <h4>ACTIVITY LOG</h4>
+                            <button id="clear-log" class="clear-btn">CLEAR</button>
+                        </div>
+                        <div id="activity-log" class="activity-log">
+                            <div class="log-entry system">
+                                <span class="log-time">[SYSTEM]</span>
+                                <span class="log-message">Interface initialized</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <footer class="footer">
+            <div class="footer-left">
+                <span id="session-info">Session: Not Active</span>
+            </div>
+            <div class="footer-right">
+                <span id="current-time"></span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+        <p>Processing...</p>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -25,9 +25,24 @@ def get_weather(city):
         print(f"[Weather Error]: {e}")
         
         
-match = re.search(r"weather in (.+)", input_text)
-if match:
-    city = match.group(1)
+# Multiple weather patterns
+weather_patterns = [
+    r"weather in (.+)",
+    r"how is the weather in (.+)",
+    r"what is the weather in (.+)",
+    r"tell me the weather in (.+)",
+    r"check weather in (.+)",
+    r"weather (.+)"
+]
+
+city = None
+for pattern in weather_patterns:
+    match = re.search(pattern, input_text, re.IGNORECASE)
+    if match:
+        city = match.group(1).strip()
+        break
+
+if city:
     get_weather(city)
 else:
     speak("Please specify a city. For example say 'Weather in Delhi'.")

@@ -18,8 +18,23 @@ import traceback
 import importlib.util
 from plyer import notification
 from cryptography.fernet import Fernet
+import urllib.request
 from core.context_manager import context_manager
 from core.nlp_engine import create_nlp_engine
+
+# Connection testing
+def test_internet_connection():
+    """Test internet connection for voice recognition"""
+    try:
+        urllib.request.urlopen('http://google.com', timeout=3)
+        return True
+    except:
+        return False
+
+# Initialize connection status
+INTERNET_AVAILABLE = test_internet_connection()
+if not INTERNET_AVAILABLE:
+    print("⚠️ [WARNING] No internet connection. Voice recognition may be limited.")
 
 # Load settings
 with open("settings.json", "r") as f:
@@ -102,23 +117,65 @@ for command, config in commands_config.items():
         for alias in config.get("aliases", []):
             ALIASES[alias.lower()] = command
 
-# Listen command
+# Listen command with robust error handling
 def listen_command():
     recognizer = sr.Recognizer()
-    with sr.Microphone() as source:
-        speak("Listening....")
-        recognizer.adjust_for_ambient_noise(source)
-        audio = recognizer.listen(source)
-    try:
-        command = recognizer.recognize_google(audio)
-        print(f"🗣️ You said: {command}")
-        return command.lower() #type: ignore
-    except sr.UnknownValueError:
-        play_feedback(ERROR_SOUND)
-        speak("Sorry, I couldn't catch that.")
-    except sr.RequestError:
-        play_feedback(ERROR_SOUND)
-        speak("Network Error.")
+    # Optimized recognition settings
+    recognizer.energy_threshold = 400  # Higher threshold for better noise filtering
+    recognizer.dynamic_energy_threshold = True
+    recognizer.pause_threshold = 0.5  # Shorter pause for better responsiveness
+    
+    max_attempts = 2  # Reduced attempts for better user experience
+    
+    for attempt in range(max_attempts):
+        try:
+            with sr.Microphone() as source:
+                if attempt == 0:
+                    print("🎤 Listening....")
+                else:
+                    print("🔄 Trying again....")
+                
+                # Adaptive ambient noise adjustment
+                noise_duration = 0.5 if attempt == 0 else 0.2
+                recognizer.adjust_for_ambient_noise(source, duration=noise_duration) # type: ignore
+                
+                # Progressive timeout adjustment
+                timeout = 8 if attempt == 0 else 5
+                phrase_limit = 4 if attempt == 0 else 3
+                
+                audio = recognizer.listen(source, timeout=timeout, phrase_time_limit=phrase_limit)
+            
+            # Try recognition
+            command = recognizer.recognize_google(audio, language='en-US')
+            print(f"🗣️ You said: {command}")
+            return command.lower().strip()  # type: ignore
+            
+        except sr.WaitTimeoutError:
+            if attempt == max_attempts - 1:
+                speak("No input detected. Please try again.")
+                return ""
+            continue
+            
+        except sr.UnknownValueError:
+            if attempt == max_attempts - 1:
+                play_feedback(ERROR_SOUND)
+                speak("I couldn't understand that. Please speak clearly.")
+                return ""
+            continue
+            
+        except sr.RequestError as e:
+            play_feedback(ERROR_SOUND)
+            speak("Network connection issue. Please check your internet.")
+            print(f"[ERROR] Request error: {e}")
+            return ""
+            
+        except Exception as e:
+            print(f"[ERROR] Unexpected error in voice recognition: {e}")
+            if attempt == max_attempts - 1:
+                speak("Voice recognition error. Please try again.")
+                return ""
+            continue
+    
     return ""
 
 # Basic NLP intent extractor
@@ -339,17 +396,24 @@ def exec_plugin(command, user_input):
         with open(plugin_path,"r") as f:
             plugin_code = f.read()
         
-        # Security: Check for dangerous operations
+        # Security: Check for dangerous operations (allow requests for weather)
         dangerous_keywords = ['import os', 'import sys', 'subprocess', 'eval(', 'exec(', '__import__']
-        if any(keyword in plugin_code for keyword in dangerous_keywords):
+        if any(keyword in plugin_code for keyword in dangerous_keywords) and 'import requests' not in plugin_code:
             speak("Security warning: Plugin contains potentially dangerous operations.")
             if not confirm_sensitive():
                 speak("Plugin execution cancelled for security.")
                 return
             
-        # Restricted execution environment
+        # Restricted execution environment (allow requests for weather)
+        import requests
+        import json as plugin_json
+        import re as plugin_re
+        
         exec(plugin_code, {
             '__builtins__': {'print': print, 'len': len, 'str': str, 'int': int, 'float': float},
+            'requests': requests,
+            'json': plugin_json,
+            're': plugin_re,
             'input_text': user_input,
             'speak': speak,
             'VOICE_MODE': VOICE_MODE,
@@ -367,8 +431,10 @@ def exec_plugin(command, user_input):
 DEBUG_MODE = settings.get("debug_mode", False)
 
 def debug_log(message):
+    """Enhanced debug logging with timestamps"""
     if DEBUG_MODE:
-        print(f"[DEBUG]: {message}")
+        timestamp = datetime.datetime.now().strftime("%H:%M:%S")
+        print(f"[DEBUG {timestamp}]: {message}")
 
 # Toggle silent mode
 def toggle_silent_mode():
@@ -378,18 +444,28 @@ def toggle_silent_mode():
 
 # Replace speak if silent
 def speak(text):
+    """Enhanced speak function with better error handling and status"""
+    timestamp = datetime.datetime.now().strftime("%H:%M:%S")
+    
     if VOICE_MODE and not SILENT_MODE:
         try:
+            # Visual indicator for voice output
+            print(f"🔊 [{timestamp}] {text}")
             engine.say(text)
             engine.runAndWait()
         except RuntimeError as e:
             if "run loop already started" in str(e):
                 # Engine is busy, just print the text
-                print(f"[{ASSISTANT_NAME}] (Voice Busy): {text}")
+                print(f"⚠️ [{ASSISTANT_NAME}] (Voice Busy): {text}")
             else:
-                print(f"[{ASSISTANT_NAME}] (TTS Error): {text}")
-    if not SILENT_MODE:
-        print(f"[{ASSISTANT_NAME}]: {text}")
+                print(f"❌ [{ASSISTANT_NAME}] (TTS Error): {text}")
+        except Exception as e:
+            print(f"❌ [{ASSISTANT_NAME}] (Speech Error): {text}")
+            debug_log(f"TTS Error: {e}")
+    else:
+        # Text-only mode indicator
+        if not SILENT_MODE:
+            print(f"💬 [{ASSISTANT_NAME}]: {text}")
 
 # Session timeout
 SESSION_TIMEOUT = 300 # 5 minutes
@@ -527,6 +603,10 @@ def execute_command(command, input_text):
         speak(f"Debug mode {'enabled' if settings['debug_mode'] else 'disabled'}.")
         update_settings_json()
     
+    # Weather command (special handling)
+    elif command == "weather_report" or "weather" in input_text.lower():
+        exec_plugin("weather_report", input_text)
+    
     # Plugin commads
     elif command in custom_plugin:
         exec_plugin(command, input_text)
@@ -594,14 +674,43 @@ def main_loop():
             speak("🔇 Voice mode deactivated.")
             continue
         
-        # Try fuzzy matching first (more reliable for current setup)
-        command_key = match_command(user_input)
+        # Multi-tier command recognition for maximum reliability
+        command_key = None
         
-        # If no fuzzy match, try NLP with lower threshold
+        # Tier 1: Direct exact matches (most reliable)
+        if user_input in ALIASES:
+            command_key = ALIASES[user_input]
+            debug_log(f"Exact match found: {command_key}")
+        
+        # Tier 2: Fuzzy matching (good for typos)
+        if not command_key:
+            command_key = match_command(user_input)
+            if command_key:
+                debug_log(f"Fuzzy match found: {command_key}")
+        
+        # Tier 3: Simple keyword detection (fallback)
+        if not command_key:
+            simple_keywords = {
+                "notepad": "open_notepad",
+                "chrome": "open_chrome",
+                "time": "get_time",
+                "help": "help",
+                "exit": "exit",
+                "volume up": "increase_volume",
+                "volume down": "decrease_volume",
+                "mute": "mute_sound",
+                "search": "search_web"
+            }
+            for keyword, cmd in simple_keywords.items():
+                if keyword in user_input:
+                    command_key = cmd
+                    debug_log(f"Keyword match found: {command_key}")
+                    break
+        
+        # Tier 4: NLP with lower threshold (if nothing else works)
         if not command_key and nlp_result["intent"] != "unknown" and nlp_result["confidence"] > 0.1:
             command_key = nlp_result["intent"]
-            if DEBUG_MODE:
-                print(f"[NLP] Detected intent: {command_key} (confidence: {nlp_result['confidence']:.2f})")
+            debug_log(f"NLP match found: {command_key} (confidence: {nlp_result['confidence']:.2f})")
         
         if command_key:
             config = commands_config.get(command_key)

@@ -22,6 +22,9 @@ cryptography>=37.0.0
 # System monitoring (for testing)
 psutil>=5.9.0
 
+# Web interface
+Flask>=2.0.0
+
 # Optional: For enhanced NLP (install manually)
 # python -m spacy download en_core_web_sm
 
